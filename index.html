@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>AR Furniture Viewer</title>
+
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <!-- AR.js untuk A-Frame -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+  <!-- Styling terpisah -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <a-scene
+    vr-mode-ui="enabled: false"
+    embedded
+    renderer="logarithmicDepthBuffer: true;"
+    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono;"
+  >
+    <!--
+      Pakai Hiro marker bawaan AR.js (marker custom dibuat terpisah oleh
+      teman satu tim). Kalau nanti teman kamu sudah kasih file .patt custom,
+      tinggal ganti url di bawah ke path file itu, misal:
+      url="asset/marker/nama-marker.patt"
+    -->
+    <a-marker type="pattern" url="https://raw.githack.com/AR-js-org/AR.js/master/data/data/patt.hiro" id="hiro-marker">
+
+      <!-- =====================================================
+           MODEL 3D ASLI (glb) — direkomendasikan
+           Ganti "asset/models/furniture.glb" dengan file hasil
+           export/convert dari Blender.
+           scale & position perlu disesuaikan manual sampai pas
+           ukurannya relatif ke marker (marker = 1 unit A-Frame).
+      ====================================================== -->
+      <a-entity
+        id="furnitur-kursi"
+        visible="true"
+        gltf-model="asset/models/furniture.glb"
+        scale="0.5 0.5 0.5"
+        position="0 0 0"
+        rotation="0 0 0"
+      ></a-entity>
+
+      <!-- =====================================================
+           ALTERNATIF: kalau tidak mau convert dari .obj, aktifkan
+           entity ini (hapus komentar) dan matikan entity gltf-model
+           di atas (visible="false"). Butuh file .obj DAN .mtl.
+      ====================================================== -->
+      <!--
+      <a-entity
+        id="furnitur-kursi-obj"
+        visible="false"
+        obj-model="obj: url(asset/models/furniture.obj); mtl: url(asset/models/furniture.mtl)"
+        scale="0.5 0.5 0.5"
+        position="0 0 0"
+        rotation="0 0 0"
+      ></a-entity>
+      -->
+
+      <!-- ===== MEJA ===== -->
+      <a-entity id="furnitur-meja" visible="false" position="0 0 0" scale="1 1 1">
+        <a-box position="0 0.7 0" width="1.4" height="0.08" depth="0.9" color="#C69C6D"></a-box>
+        <a-cylinder position="-0.6 0.35 -0.35" radius="0.05" height="0.7" color="#5C4326"></a-cylinder>
+        <a-cylinder position="0.6 0.35 -0.35" radius="0.05" height="0.7" color="#5C4326"></a-cylinder>
+        <a-cylinder position="-0.6 0.35 0.35" radius="0.05" height="0.7" color="#5C4326"></a-cylinder>
+        <a-cylinder position="0.6 0.35 0.35" radius="0.05" height="0.7" color="#5C4326"></a-cylinder>
+      </a-entity>
+
+      <!-- ===== SOFA ===== -->
+      <a-entity id="furnitur-sofa" visible="false" position="0 0 0" scale="1 1 1">
+        <a-box position="0 0.35 0" width="1.8" height="0.4" depth="0.9" color="#4B6587"></a-box>
+        <a-box position="0 0.75 -0.4" width="1.8" height="0.5" depth="0.15" color="#3E5578"></a-box>
+        <a-box position="-0.85 0.6 0" width="0.15" height="0.55" depth="0.9" color="#3E5578"></a-box>
+        <a-box position="0.85 0.6 0" width="0.15" height="0.55" depth="0.9" color="#3E5578"></a-box>
+        <a-cylinder position="-0.7 0.1 -0.3" radius="0.06" height="0.2" color="#222"></a-cylinder>
+        <a-cylinder position="0.7 0.1 -0.3" radius="0.06" height="0.2" color="#222"></a-cylinder>
+        <a-cylinder position="-0.7 0.1 0.3" radius="0.06" height="0.2" color="#222"></a-cylinder>
+        <a-cylinder position="0.7 0.1 0.3" radius="0.06" height="0.2" color="#222"></a-cylinder>
+      </a-entity>
+
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <main class="ar-ui" aria-label="Furniture AR viewer">
+    <div class="topbar">
+      <button class="icon-button" type="button" id="close-button" aria-label="Help">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.7 9a2.4 2.4 0 1 1 3.8 2c-1 .7-1.5 1.2-1.5 2.5M12 16.8h.01"/></svg>
+      </button>
+    </div>
+
+    <div class="status-message" id="status" role="status" aria-live="polite"></div>
+
+    <section class="scene-help" aria-live="polite">
+      <p>Move and turn to fit it into place</p>
+      <div class="placement-frame" aria-hidden="true"></div>
+    </section>
+
+    <div class="selection-sheet" id="selection-sheet" aria-label="Furniture choices">
+      <button class="active" type="button" data-furnitur="kursi">Kursi</button>
+      <button type="button" data-furnitur="meja">Meja</button>
+      <button type="button" data-furnitur="sofa">Sofa</button>
+    </div>
+
+    <nav class="bottom-controls" aria-label="AR controls">
+      <button class="round-button" type="button" aria-label="Undo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 8 5 12l4 4"/><path d="M6 12h7a5 5 0 1 1 0 10h-1"/></svg>
+      </button>
+      <button class="primary-control" id="place-button" type="button" aria-label="Place furniture">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6.5 12.5 10 16l7.5-8"/></svg>
+      </button>
+      <button class="round-button" type="button" id="more-button" aria-label="Choose furniture">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="6" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="18" cy="12" r="1" fill="currentColor"/></svg>
+      </button>
+    </nav>
+  </main>
+
+  <!-- Logic aplikasi terpisah -->
+  <script src="app.js"></script>
+</body>
+</html>

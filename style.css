@@ -1,0 +1,252 @@
+:root {
+  --blue: #0078c9;
+  --ink: #101215;
+  --surface: rgba(255, 255, 255, 0.94);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #a9cfca;
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Kamera dan canvas AR tetap berada di belakang overlay aplikasi. */
+video,
+.a-canvas,
+a-scene {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  object-fit: cover !important;
+}
+
+a-scene {
+  z-index: 0;
+}
+
+.ar-ui {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.ar-ui button {
+  font: inherit;
+}
+
+.ar-ui button {
+  pointer-events: auto;
+}
+
+.topbar {
+  min-height: 52px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.icon-button,
+.round-button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  color: #23272b;
+  background: var(--surface);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+}
+
+.icon-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.icon-button svg,
+.round-button svg {
+  width: 21px;
+  height: 21px;
+}
+
+.scene-help {
+  position: absolute;
+  top: 24%;
+  left: 50%;
+  width: min(202px, calc(100vw - 72px));
+  transform: translateX(-50%);
+  text-align: center;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.scene-help p {
+  display: inline-block;
+  max-width: 190px;
+  margin: 0 0 14px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #202224;
+  font-size: 11px;
+  line-height: 14px;
+  box-shadow: 0 2px 9px rgba(0, 0, 0, 0.08);
+}
+
+.placement-frame {
+  position: relative; /* fix: dibutuhkan agar ::before/::after menempel pas ke frame ini */
+  width: 112px;
+  height: 160px;
+  margin: 0 auto;
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.placement-frame::before,
+.placement-frame::after {
+  content: '';
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-color: var(--blue);
+  border-style: solid;
+}
+
+.placement-frame::before {
+  left: 45px;
+  bottom: 0;
+  border-width: 0 0 2px 2px;
+}
+
+.placement-frame::after {
+  right: 45px;
+  bottom: 0;
+  border-width: 0 2px 2px 0;
+}
+
+.bottom-controls {
+  width: min(360px, 100%);
+  margin: auto auto 0;
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 16px;
+}
+
+.round-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.primary-control {
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--blue);
+  box-shadow: 0 3px 10px rgba(0, 91, 155, 0.35);
+  cursor: pointer;
+}
+
+.primary-control svg {
+  width: 23px;
+  height: 23px;
+}
+
+.selection-sheet {
+  position: absolute;
+  right: 16px;
+  bottom: max(84px, calc(env(safe-area-inset-bottom) + 72px));
+  left: 16px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  transform: translateY(12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: 180ms ease;
+  pointer-events: auto;
+}
+
+.selection-sheet.is-open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.selection-sheet button {
+  flex: 1;
+  border: 1px solid #e2e5e6;
+  border-radius: 9px;
+  padding: 9px 4px;
+  color: #303438;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.selection-sheet button.active {
+  border-color: var(--blue);
+  color: #fff;
+  background: var(--blue);
+}
+
+.status-message {
+  position: absolute;
+  top: max(74px, calc(env(safe-area-inset-top) + 58px));
+  left: 50%;
+  width: max-content;
+  max-width: calc(100vw - 48px);
+  transform: translateX(-50%);
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(20, 29, 30, 0.62);
+  font-size: 11px;
+  line-height: 14px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.status-message.is-visible {
+  opacity: 1;
+}
+
+body.is-placed .scene-help {
+  opacity: 0;
+  transform: translate(-50%, -8px);
+  pointer-events: none;
+}
+
+body.is-placed .primary-control {
+  background: #0b8a59;
+}
+
+@media (min-width: 620px) {
+  .ar-ui {
+    max-width: 430px;
+    margin: auto;
+  }
+}
