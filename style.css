@@ -106,8 +106,8 @@ a-scene {
 
 .placement-frame {
   position: relative; /* fix: dibutuhkan agar ::before/::after menempel pas ke frame ini */
-  width: 112px;
-  height: 160px;
+  width: 140px;
+  height: 140px;
   margin: 0 auto;
   border: 1.5px solid rgba(255, 255, 255, 0.95);
   border-radius: 8px;
