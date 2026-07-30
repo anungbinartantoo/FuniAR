@@ -19,70 +19,52 @@
     vr-mode-ui="enabled: false"
     embedded
     renderer="logarithmicDepthBuffer: true;"
-    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono;"
+    arjs="sourceType: webcam; patternRatio: 0.5; debugUIEnabled: false; detectionMode: mono;"
   >
-    <!--
-      Pakai Hiro marker bawaan AR.js (marker custom dibuat terpisah oleh
-      teman satu tim). Kalau nanti teman kamu sudah kasih file .patt custom,
-      tinggal ganti url di bawah ke path file itu, misal:
-      url="asset/marker/nama-marker.patt"
-    -->
-    <a-marker type="pattern" url="https://raw.githack.com/AR-js-org/AR.js/master/data/data/patt.hiro" id="hiro-marker">
-
-      <!-- =====================================================
-           MODEL 3D ASLI (glb) — direkomendasikan
-           Ganti "asset/models/furniture.glb" dengan file hasil
-           export/convert dari Blender.
-           scale & position perlu disesuaikan manual sampai pas
-           ukurannya relatif ke marker (marker = 1 unit A-Frame).
-      ====================================================== -->
+    <!-- ===== MARKER: LEMARI ===== -->
+    <a-marker type="pattern" url="asset/patterns/pattern-marker-lemari.patt" id="marker-lemari">
       <a-entity
-        id="furnitur-kursi"
-        visible="true"
-        gltf-model="asset/models/furniture.glb"
+        id="furnitur-lemari"
+        gltf-model="asset/models/lemari.glb"
         scale="0.5 0.5 0.5"
-        position="0 0 0"
+        position="0 1 0"
         rotation="0 0 0"
       ></a-entity>
-
-      <!-- =====================================================
-           ALTERNATIF: kalau tidak mau convert dari .obj, aktifkan
-           entity ini (hapus komentar) dan matikan entity gltf-model
-           di atas (visible="false"). Butuh file .obj DAN .mtl.
-      ====================================================== -->
-      <!--
-      <a-entity
-        id="furnitur-kursi-obj"
-        visible="false"
-        obj-model="obj: url(asset/models/furniture.obj); mtl: url(asset/models/furniture.mtl)"
-        scale="0.5 0.5 0.5"
-        position="0 0 0"
-        rotation="0 0 0"
-      ></a-entity>
-      -->
-
-      <!-- ===== MEJA ===== -->
-      <a-entity id="furnitur-meja" visible="false" position="0 0 0" scale="1 1 1">
-        <a-box position="0 0.7 0" width="1.4" height="0.08" depth="0.9" color="#C69C6D"></a-box>
-        <a-cylinder position="-0.6 0.35 -0.35" radius="0.05" height="0.7" color="#5C4326"></a-cylinder>
-        <a-cylinder position="0.6 0.35 -0.35" radius="0.05" height="0.7" color="#5C4326"></a-cylinder>
-        <a-cylinder position="-0.6 0.35 0.35" radius="0.05" height="0.7" color="#5C4326"></a-cylinder>
-        <a-cylinder position="0.6 0.35 0.35" radius="0.05" height="0.7" color="#5C4326"></a-cylinder>
-      </a-entity>
-
-      <!-- ===== SOFA ===== -->
-      <a-entity id="furnitur-sofa" visible="false" position="0 0 0" scale="1 1 1">
-        <a-box position="0 0.35 0" width="1.8" height="0.4" depth="0.9" color="#4B6587"></a-box>
-        <a-box position="0 0.75 -0.4" width="1.8" height="0.5" depth="0.15" color="#3E5578"></a-box>
-        <a-box position="-0.85 0.6 0" width="0.15" height="0.55" depth="0.9" color="#3E5578"></a-box>
-        <a-box position="0.85 0.6 0" width="0.15" height="0.55" depth="0.9" color="#3E5578"></a-box>
-        <a-cylinder position="-0.7 0.1 -0.3" radius="0.06" height="0.2" color="#222"></a-cylinder>
-        <a-cylinder position="0.7 0.1 -0.3" radius="0.06" height="0.2" color="#222"></a-cylinder>
-        <a-cylinder position="-0.7 0.1 0.3" radius="0.06" height="0.2" color="#222"></a-cylinder>
-        <a-cylinder position="0.7 0.1 0.3" radius="0.06" height="0.2" color="#222"></a-cylinder>
-      </a-entity>
-
     </a-marker>
+
+    <!-- ===== MARKER: MEJA ===== -->
+    <a-marker type="pattern" url="asset/patterns/pattern-marker-meja.patt" id="marker-meja">
+      <a-entity
+        id="furnitur-meja"
+        gltf-model="asset/models/meja.glb"
+        scale="0.5 0.5 0.5"
+        position="0 1 0"
+        rotation="0 0 0"
+      ></a-entity>
+    </a-marker>
+
+    <!-- ===== MARKER: SOFA ===== -->
+    <a-marker type="pattern" url="asset/patterns/pattern-marker-sofa.patt" id="marker-sofa">
+      <a-entity
+        id="furnitur-sofa"
+        gltf-model="asset/models/sofa.glb"
+        scale="0.5 0.5 0.5"
+        position="0 1 0"
+        rotation="0 0 0"
+      ></a-entity>
+    </a-marker>
+
+    <!-- ===== TAMBAH MARKER BARU DI SINI (contoh) =====
+    <a-marker type="pattern" url="asset/patterns/pattern-marker-NAMA.patt" id="marker-NAMA">
+      <a-entity
+        id="furnitur-NAMA"
+        gltf-model="asset/models/NAMA.glb"
+        scale="0.05 0.05 0.05"
+        position="0 0 0"
+        rotation="0 0 0"
+      ></a-entity>
+    </a-marker>
+    ================================================== -->
 
     <a-entity camera></a-entity>
   </a-scene>
@@ -97,14 +79,15 @@
     <div class="status-message" id="status" role="status" aria-live="polite"></div>
 
     <section class="scene-help" aria-live="polite">
-      <p>Move and turn to fit it into place</p>
+      <p>Arahkan kamera ke salah satu marker: Lemari, Meja, atau Sofa</p>
       <div class="placement-frame" aria-hidden="true"></div>
     </section>
 
     <div class="selection-sheet" id="selection-sheet" aria-label="Furniture choices">
-      <button class="active" type="button" data-furnitur="kursi">Kursi</button>
+      <button class="active" type="button" data-furnitur="lemari">Lemari</button>
       <button type="button" data-furnitur="meja">Meja</button>
       <button type="button" data-furnitur="sofa">Sofa</button>
+      <!-- Tambah tombol baru di sini kalau nambah furniture -->
     </div>
 
     <nav class="bottom-controls" aria-label="AR controls">
@@ -124,10 +107,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
-<a-scene
-  vr-mode-ui="enabled: false"
-  embedded
-  renderer="logarithmicDepthBuffer: true;"
-  arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; sourceWidth: 1280; sourceHeight: 960; displayWidth: 1280; displayHeight: 960;"
->

@@ -1,4 +1,6 @@
-const DAFTAR_FURNITUR = ['kursi', 'meja', 'sofa'];
+const DAFTAR_FURNITUR = ['lemari', 'meja', 'sofa'];
+// ⬆️ Kalau nambah furniture baru, tinggal tambahin nama di array ini,
+// pastikan namanya SAMA PERSIS dengan id marker & id model di index.html
 
 function tampilkanStatus(pesan) {
   const status = document.querySelector('#status');
@@ -10,15 +12,13 @@ function tampilkanStatus(pesan) {
   }, 2200);
 }
 
-function pilihFurnitur(namaFurnitur, tombol) {
-  DAFTAR_FURNITUR.forEach((furnitur) => {
-    const entitas = document.getElementById(`furnitur-${furnitur}`);
-    if (entitas) entitas.setAttribute('visible', furnitur === namaFurnitur);
-  });
-
+// Tombol Lemari/Meja/Sofa cuma buat highlight & kasih instruksi,
+// BUKAN show/hide (karena tiap furniture punya marker fisik sendiri)
+function highlightPilihan(namaFurnitur, tombol) {
   document.querySelectorAll('[data-furnitur]').forEach((button) => {
     button.classList.toggle('active', button === tombol);
   });
+  tampilkanStatus(`Arahkan kamera ke marker ${namaFurnitur}`);
 }
 
 function initUI() {
@@ -31,7 +31,7 @@ function initUI() {
 
   document.querySelectorAll('[data-furnitur]').forEach((button) => {
     button.addEventListener('click', () => {
-      pilihFurnitur(button.dataset.furnitur, button);
+      highlightPilihan(button.dataset.furnitur, button);
       sheet.classList.remove('is-open');
     });
   });
@@ -42,33 +42,39 @@ function initUI() {
     tampilkanStatus(
       sudahDiletakkan
         ? 'Furniture placed'
-        : 'Move and turn to fit it into place'
+        : 'Arahkan kamera ke salah satu marker'
     );
   });
 
   document.querySelector('#close-button').addEventListener('click', () => {
-    tampilkanStatus('Tap the product card to change furniture');
+    tampilkanStatus('Tap kartu produk untuk ganti furniture');
   });
 }
 
+// Pasang listener markerFound/markerLost untuk SEMUA marker di DAFTAR_FURNITUR
 function initMarkerStatus() {
-  const marker = document.querySelector('#hiro-marker');
-  if (!marker) return;
+  DAFTAR_FURNITUR.forEach((nama) => {
+    const marker = document.querySelector(`#marker-${nama}`);
+    if (!marker) return;
 
-  marker.addEventListener('markerFound', () => {
-    tampilkanStatus('Marker detected');
-  });
-  marker.addEventListener('markerLost', () => {
-    tampilkanStatus('Point camera at the Hiro marker');
+    marker.addEventListener('markerFound', () => {
+      tampilkanStatus(`Marker ${nama} terdeteksi`);
+    });
+    marker.addEventListener('markerLost', () => {
+      tampilkanStatus('Arahkan kamera ke salah satu marker');
+    });
   });
 }
 
+// Cek error load model untuk SEMUA model di DAFTAR_FURNITUR
 function initModelDebug() {
-  const model = document.querySelector('#furnitur-kursi');
-  if (!model) return;
+  DAFTAR_FURNITUR.forEach((nama) => {
+    const model = document.querySelector(`#furnitur-${nama}`);
+    if (!model) return;
 
-  model.addEventListener('model-error', () => {
-    tampilkanStatus('Furniture model could not be loaded');
+    model.addEventListener('model-error', () => {
+      tampilkanStatus(`Model ${nama} gagal dimuat`);
+    });
   });
 }
 
