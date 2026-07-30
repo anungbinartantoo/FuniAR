@@ -29,6 +29,18 @@ a-scene {
   object-fit: cover !important;
 }
 
+video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1 !important;
+}
+
+a-scene {
+  z-index: 2 !important;
+  background: transparent !important;
+}
+
 a-scene {
   z-index: 0;
 }
